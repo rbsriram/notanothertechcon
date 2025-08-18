@@ -13,20 +13,19 @@ export default async function handler(req) {
   try {
     const formData = await req.formData();
 
-    // Forward the exact FormData to Apps Script
     const res = await fetch(APPSCRIPT_URL, {
       method: 'POST',
-      body: formData
-      // No custom headers -> keep it simple, no preflight
+      body: formData,          // forward as-is (no headers -> no preflight)
+      redirect: 'follow'
     });
 
     const text = await res.text();
-    // Pass Apps Script's plain response back to the client
+    // Return Apps Script status + body for debugging
     return new Response(text, {
-      status: 200,
+      status: res.status,
       headers: { 'content-type': 'text/plain', 'cache-control': 'no-store' }
     });
   } catch (err) {
-    return new Response('proxy_error', { status: 500 });
+    return new Response(`proxy_error:${String(err)}`, { status: 500 });
   }
 }
