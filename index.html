@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Not Another Tech Conference</title>
+  <meta name="description" content="Not Another Tech Conference — Built in the desert. Burn the suits. Bring the future." />
+  <style>
+    :root{
+      --bg:#000;
+      --text:#eaeaea;
+      --muted:#9a9a9a;
+      --border:#2a2a2a;
+      --strong:#fff;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{background:var(--bg);color:var(--text);font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:960px;margin:0 auto;padding:clamp(16px,3vw,32px)}
+    h1{font-size:clamp(2.2rem,6vw,4rem);text-transform:uppercase;letter-spacing:.02em;margin:.25rem 0 1rem;color:var(--strong)}
+    h2{font-size:clamp(1.2rem,3.2vw,2rem);margin:2rem 0 1rem;color:var(--strong)}
+    p{margin-bottom:1rem;max-width:72ch}
+    .sub{color:var(--muted);max-width:72ch;margin:.25rem 0 1.5rem}
+    .manifesto p{margin:.35rem 0}
+    .rules{border:1px solid var(--border);padding:1rem;max-width:72ch}
+    .rules li{list-style:none;margin:.6rem 0}
+    .cta{display:inline-block;margin-top:2rem;border:1.5px solid var(--strong);padding:.9rem 1.4rem;text-transform:uppercase;font-weight:700;letter-spacing:.08em}
+    .cta:focus,.cta:hover{background:var(--strong);color:var(--bg);outline:none}
+    footer{margin-top:3rem;font-size:.9rem;color:var(--muted)}
+    /* Accessibility */
+    .cta:focus{outline:2px dashed var(--strong);outline-offset:4px}
+    /* Form */
+    form{max-width:72ch;margin-top:1rem}
+    .field{margin:1rem 0;position:relative}
+    label{display:block;font-weight:700;margin-bottom:.35rem}
+    input, textarea{width:100%;background:#0d0d0d;border:1px solid var(--border);color:var(--text);padding:.8rem;border-radius:4px}
+    textarea{min-height:120px;resize:vertical}
+    .hint{color:var(--muted);font-size:.9rem;position:absolute;bottom:-1.4rem;left:0}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media (max-width:700px){.row{grid-template-columns:1fr}}
+    .actions{margin-top:2.5rem}
+    .btn{border:1.5px solid var(--strong);padding:.8rem 1.2rem;text-transform:uppercase;font-weight:700;letter-spacing:.08em;background:transparent;color:var(--strong);cursor:pointer}
+    .btn:hover,.btn:focus{background:var(--strong);color:var(--bg)}
+    .note{border:1px dashed var(--border);padding:1rem;margin-top:1rem;color:var(--muted)}
+    .success{border:1px solid #2e7d32;color:#b6f7bf}
+    .error{border:1px solid #b71c1c;color:#ffbdbd}
+    #entry{display:none}
+  </style>
+</head>
+<body>
+  <main class="wrap" role="main">
+    <h1>Not Another Tech Conference</h1>
+
+    <p class="sub">Built in the desert. Burn the suits. Bring the future.</p>
+
+    <section class="manifesto" aria-labelledby="mf">
+      <h2 id="mf">Manifesto</h2>
+      <p>No panels, no keynotes, no safe ideas.</p>
+      <p>We meet in deserts, rooftops, and backrooms. We build, we break, we learn.</p>
+      <p>AI isn’t hype; it’s in your face. It judges, mocks, and pushes you harder.</p>
+      <p>Status isn’t your title or funding; it’s what you make.</p>
+      <p>No spectators, no sidelines. If you’re here, you play.</p>
+      <p>This is <strong>Not Another Tech Conference.</strong></p>
+    </section>
+
+    <section aria-labelledby="code">
+      <h2 id="code">Break These, You’re Out</h2>
+      <ul class="rules">
+        <li>1. <strong>No Suits. No Slides.</strong> You show up as you, not your LinkedIn profile.</li>
+        <li>2. <strong>Make &gt; Talk.</strong> Talkers get ignored. Builders get remembered.</li>
+        <li>3. <strong>AI Calls the Shots.</strong> It runs the room — tool, collaborator, provocateur. Be ready.</li>
+        <li>4. <strong>Leave Smarter or Don’t Leave.</strong> Build, break, or learn. Otherwise, why are you here?</li>
+        <li>5. <strong>No Spectators.</strong> Everyone participates. No sidelines, no passengers.</li>
+      </ul>
+    </section>
+
+    <a href="#entry" class="cta" id="cta" aria-label="Break In">Break In</a>
+
+    <footer>
+      <!-- Easter eggs -->
+      <p id="egg"></p>
+    </footer>
+
+    <!-- Entry Form -->
+    <section id="entry" aria-labelledby="entry-title" style="margin-top:3rem">
+      <h2 id="entry-title">Break In</h2>
+      <p class="note"><strong>⚠ No GPT. No LLM auto-babble.</strong> We’ll know. If your answers smell like prompts, you’re out.<br/>
+      Tip: Write like a human. Short is fine. Honest is mandatory</p>
+      <form id="breakin-form" novalidate>
+        <div class="row">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" autocomplete="name" required placeholder="The name you actually use" />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required placeholder="So that we can drag you into this" />
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:2.5rem">
+          <label for="location">Where are you right now?</label>
+          <input id="location" name="location" type="text" placeholder="Your city or town" />
+          
+        </div>
+
+        <div class="field">
+          <label for="q_fail">What have you failed at - brutally and honestly?</label>
+          <textarea id="q_fail" name="q_fail" required placeholder="Work, school, relationships, habits - anything. Tell it raw."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="q_do">No spectators - what will you do at the gathering?</label>
+          <textarea id="q_do" name="q_do" required placeholder="Think like you own the show. What will you create, provoke, or bring?"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="q_contra">What’s the most contrarian thing you’ve done?</label>
+          <textarea id="q_contra" name="q_contra" required placeholder="Contrarian = doing the opposite of what everyone expected — work, family, society, actually anywhere."></textarea>
+        </div>
+
+        <!-- honeypot -->
+        <input type="text" id="hp" name="hp" style="position:absolute;left:-9999px" tabindex="-1" autocomplete="off" />
+
+        <div class="actions">
+          <button class="btn" type="submit">Submit Pledge</button>
+        </div>
+        <p id="form-msg" class="note" style="display:none"></p>
+      </form>
+
+      
+    </section>
+
+  </main>
+
+  <script>
+      // Show form only after CTA click
+      document.getElementById('cta').addEventListener('click', function(e){
+        e.preventDefault();
+        const formSection = document.getElementById('entry');
+        if(formSection){
+          formSection.style.display='block';
+          // set a render timestamp when form becomes visible
+          const tsEl = document.getElementById('ts');
+          if (tsEl) tsEl.value = new Date().toISOString();
+          formSection.scrollIntoView({behavior:'smooth'});
+        }
+      });
+
+      // Easter egg footer messages
+      const eggs = [
+        "404 suits not found",
+        "AI is watching…",
+        "Glitch in the desert",
+        "Spectators get ejected",
+        "This line will self-destruct"
+      ];
+      document.getElementById('egg').textContent = eggs[Math.floor(Math.random()*eggs.length)];
+
+      
+      const form = document.getElementById('breakin-form');
+      const msg  = document.getElementById('form-msg');
+
+      if(form){
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          msg.style.display = 'none';
+
+          // honeypot
+          if (document.getElementById('hp').value) return;
+
+          // basic checks
+          if (!form.name.value.trim() || !form.email.value.trim() ||
+              !form.q_fail.value.trim() || !form.q_do.value.trim() || !form.q_contra.value.trim()) {
+            msg.textContent = 'Fill the required fields. No spectators.';
+            msg.className = 'note error';
+            msg.style.display = 'block';
+            return;
+          }
+
+          // ensure ts is set (in case user skipped CTA reveal somehow)
+          const tsEl = document.getElementById('ts');
+          if (tsEl && !tsEl.value) tsEl.value = new Date().toISOString();
+
+          const fd = new FormData(form);
+          fd.append('ua', navigator.userAgent);
+
+          try {
+            const res = await fetch('/api/submit', { method: 'POST', body: fd });
+            const text = await res.text(); // Apps Script returns plain text codes
+            if (text.startsWith('duplicate:email')) {
+              msg.textContent = 'Already submitted.';
+              msg.className = 'note error';
+            } else if (text.startsWith('rate_limited')) {
+              msg.textContent = 'Already submitted.';
+              msg.className = 'note error';
+            } else if (text.startsWith('too_fast')) {
+              msg.textContent = 'Slow down. Read, think, then submit.';
+              msg.className = 'note error';
+            } else if (text.startsWith('missing:')) {
+              msg.textContent = 'Missing a required field. Check and try again.';
+              msg.className = 'note error';
+            } else if (text.startsWith('invalid:email')) {
+              msg.textContent = 'Email looks wrong. Try again.';
+              msg.className = 'note error';
+            } else if (text.startsWith('ok')) {
+              form.reset();
+              msg.textContent = 'Pledge received. If you’re one of us, you’ll hear back.';
+              msg.className = 'note success';
+            } else {
+              // unknown response
+              msg.textContent = 'Something broke. Try again later.';
+              msg.className = 'note error';
+            }
+            msg.style.display = 'block';
+          } catch (err) {
+            console.error(err);
+            msg.textContent = 'Network error. Try again later.';
+            msg.className = 'note error';
+            msg.style.display = 'block';
+          }
+        });
+      }
+    </script>
+  </body>
+  </html>
