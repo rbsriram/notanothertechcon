@@ -133,93 +133,115 @@
   </main>
 
   <script>
-      // Show form only after CTA click
-      document.getElementById('cta').addEventListener('click', function(e){
-        e.preventDefault();
-        const formSection = document.getElementById('entry');
-        if(formSection){
-          formSection.style.display='block';
-          // set a render timestamp when form becomes visible
-          const tsEl = document.getElementById('ts');
-          if (tsEl) tsEl.value = new Date().toISOString();
-          formSection.scrollIntoView({behavior:'smooth'});
-        }
-      });
-
-      // Easter egg footer messages
-      const eggs = [
-        "404 suits not found",
-        "AI is watching…",
-        "Glitch in the desert",
-        "Spectators get ejected",
-        "This line will self-destruct"
-      ];
-      document.getElementById('egg').textContent = eggs[Math.floor(Math.random()*eggs.length)];
-
-      
-      const form = document.getElementById('breakin-form');
-      const msg  = document.getElementById('form-msg');
-
-      if(form){
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          msg.style.display = 'none';
-
-          // honeypot
-          if (document.getElementById('hp').value) return;
-
-          // basic checks
-          if (!form.name.value.trim() || !form.email.value.trim() ||
-              !form.q_fail.value.trim() || !form.q_do.value.trim() || !form.q_contra.value.trim()) {
-            msg.textContent = 'Fill the required fields. No spectators.';
-            msg.className = 'note error';
-            msg.style.display = 'block';
-            return;
-          }
-
-          // ensure ts is set (in case user skipped CTA reveal somehow)
-          const tsEl = document.getElementById('ts');
-          if (tsEl && !tsEl.value) tsEl.value = new Date().toISOString();
-
-          const fd = new FormData(form);
-          fd.append('ua', navigator.userAgent);
-
-          try {
-            const res = await fetch('/api/submit', { method: 'POST', body: fd });
-            const text = await res.text(); // Apps Script returns plain text codes
-            if (text.startsWith('duplicate:email')) {
-              msg.textContent = 'Already submitted.';
-              msg.className = 'note error';
-            } else if (text.startsWith('rate_limited')) {
-              msg.textContent = 'Already submitted.';
-              msg.className = 'note error';
-            } else if (text.startsWith('too_fast')) {
-              msg.textContent = 'Slow down. Read, think, then submit.';
-              msg.className = 'note error';
-            } else if (text.startsWith('missing:')) {
-              msg.textContent = 'Missing a required field. Check and try again.';
-              msg.className = 'note error';
-            } else if (text.startsWith('invalid:email')) {
-              msg.textContent = 'Email looks wrong. Try again.';
-              msg.className = 'note error';
-            } else if (text.startsWith('ok')) {
-              form.reset();
-              msg.textContent = 'Pledge received. If you’re one of us, you’ll hear back.';
-              msg.className = 'note success';
-            } else {
-              // unknown response
-              msg.textContent = 'Something broke. Try again later.';
-              msg.className = 'note error';
-            }
-            msg.style.display = 'block';
-          } catch (err) {
-            console.error(err);
-            msg.textContent = 'Network error. Try again later.';
-            msg.className = 'note error';
-            msg.style.display = 'block';
-          }
-        });
+    // Show form only after CTA click
+    document.getElementById('cta').addEventListener('click', function(e){
+      e.preventDefault();
+      const formSection = document.getElementById('entry');
+      if(formSection){
+        formSection.style.display='block';
+        formSection.scrollIntoView({behavior:'smooth'});
       }
-    </script>
+    });
+
+    // Easter egg footer messages
+    const eggs = [
+      "404 suits not found",
+      "AI is watching…",
+      "Glitch in the desert",
+      "Spectators get ejected",
+      "This line will self-destruct"
+    ];
+    document.getElementById('egg').textContent = eggs[Math.floor(Math.random()*eggs.length)];
+
+    // === Submit to Google Apps Script using FormData (avoids CORS preflight) ===
+    const SCRIPT_URL = 'PASTE_YOUR_WEB_APP_URL_HERE'; // replace with your deployed Apps Script URL
+    const form = document.getElementById('breakin-form');
+  const msg  = document.getElementById('form-msg');
+  const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+  const DEBUG = true; // set to false when you want to hide raw errors
+
+  if(form){
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.style.display = 'none';
+
+      // honeypot
+      if (document.getElementById('hp').value) return;
+
+      // basic checks
+      if (!form.name.value.trim() || !form.email.value.trim() ||
+          !form.q_fail.value.trim() || !form.q_do.value.trim() || !form.q_contra.value.trim()) {
+        msg.textContent = 'Fill the required fields. No spectators.';
+        msg.className = 'note error';
+        msg.style.display = 'block';
+        return;
+      }
+
+      // ensure ts is set (in case user skipped CTA reveal somehow)
+      const tsEl = document.getElementById('ts');
+      if (tsEl && !tsEl.value) tsEl.value = new Date().toISOString();
+
+      const fd = new FormData(form);
+      fd.append('ua', navigator.userAgent);
+
+      // disable + loading state
+      let prevText = '';
+      if (submitBtn){ prevText = submitBtn.textContent; submitBtn.textContent = 'Submitting…'; submitBtn.disabled = true; }
+      msg.textContent = 'Submitting…';
+      msg.className = 'note';
+      msg.style.display = 'block';
+
+      // timeout guard
+      const controller = new AbortController();
+      const to = setTimeout(()=>controller.abort('timeout'), 20000);
+
+      try {
+        const res = await fetch('/api/submit', { method: 'POST', body: fd, signal: controller.signal });
+        const text = await res.text();
+
+        if (!res.ok) {
+          // show exact status + snippet for debugging
+          msg.textContent = DEBUG ? `Server ${res.status}: ${text.slice(0, 200)}` : 'Something broke. Try again later.';
+          msg.className = 'note error';
+          msg.style.display = 'block';
+          return;
+        }
+
+        if (text.startsWith('duplicate:email')) {
+          msg.textContent = 'Already submitted.';
+          msg.className = 'note error';
+        } else if (text.startsWith('rate_limited')) {
+          msg.textContent = 'Already submitted.';
+          msg.className = 'note error';
+        } else if (text.startsWith('too_fast')) {
+          msg.textContent = 'Slow down. Read, think, then submit.';
+          msg.className = 'note error';
+        } else if (text.startsWith('missing:')) {
+          msg.textContent = 'Missing a required field. Check and try again.';
+          msg.className = 'note error';
+        } else if (text.startsWith('invalid:email')) {
+          msg.textContent = 'Email looks wrong. Try again.';
+          msg.className = 'note error';
+        } else if (text.startsWith('ok')) {
+          form.reset();
+          msg.textContent = 'Pledge received. If you’re one of us, you’ll hear back.';
+          msg.className = 'note success';
+        } else {
+          msg.textContent = DEBUG ? `Unexpected response: ${text.slice(0, 200)}` : 'Something broke. Try again later.';
+          msg.className = 'note error';
+        }
+        msg.style.display = 'block';
+      } catch (err) {
+        const detail = (err && err.message) ? err.message : String(err);
+        msg.textContent = DEBUG ? `Client error: ${detail}` : 'Network error. Try again later.';
+        msg.className = 'note error';
+        msg.style.display = 'block';
+      } finally {
+        clearTimeout(to);
+        if (submitBtn){ submitBtn.disabled = false; submitBtn.textContent = prevText || 'Submit Pledge'; }
+      }
+    });
+  }
+  </script>
   </body>
   </html>
