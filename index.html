@@ -179,8 +179,12 @@
       if (document.getElementById('hp').value) return;
 
       // basic checks
-      if (!form.name.value.trim() || !form.email.value.trim() || form.identity.value.trim() ||
-          !form.q_fail.value.trim() || !form.q_build.value.trim() || !form.q_contra.value.trim()) {
+      if (!form.name.value.trim() ||
+          !form.email.value.trim() ||
+          !form.identity.value.trim() ||   
+          !form.q_fail.value.trim() ||
+          !form.q_build.value.trim() ||
+          !form.q_contra.value.trim()) {
         msg.textContent = 'Fill the required fields. No spectators.';
         msg.className = 'note error';
         msg.style.display = 'block';
