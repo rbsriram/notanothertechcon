@@ -107,7 +107,7 @@
         </div>
         <div class="field" style="margin-bottom:2.5rem">
           <label for="identity">What single term best describes you beyond your job title?</label>
-          <input id="identity" name="identity" type="text" placeholder="One word or short phrase only. Think builder, engineer, writer, hacker, designer. Keep it real." />
+          <input id="identity" name="identity" type="text" required placeholder="One word or short phrase only. Think builder, engineer, writer, hacker, designer. Keep it real." />
           
         </div>
 
@@ -133,6 +133,8 @@
           <button class="btn" type="submit">Submit Pledge</button>
         </div>
         <p id="form-msg" class="note" style="display:none"></p>
+
+        <input type="hidden" id="ts" name="ts" />
       </form>
 
       
@@ -177,8 +179,8 @@
       if (document.getElementById('hp').value) return;
 
       // basic checks
-      if (!form.name.value.trim() || !form.email.value.trim() ||
-          !form.q_fail.value.trim() || !form.q_do.value.trim() || !form.q_contra.value.trim()) {
+      if (!form.name.value.trim() || !form.email.value.trim() || form.identity.value.trim() ||
+          !form.q_fail.value.trim() || !form.q_build.value.trim() || !form.q_contra.value.trim()) {
         msg.textContent = 'Fill the required fields. No spectators.';
         msg.className = 'note error';
         msg.style.display = 'block';
